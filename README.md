@@ -1,10 +1,10 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Todo
-[x] - Tree + API + States from JSON
-[ ] - DSL to generate UI (Json serializer / unserilizer)
-[ ] - Component context (with all states, apis, etc)
-[ ] - Custom Adapters support (customization)
+- [x] Tree + API + States from JSON
+- [ ] DSL to generate UI (Json serializer / unserilizer)
+- [ ] Component context (with all states, apis, etc)
+- [ ] Custom Adapters support (customization)
 
 ## Getting Started
 
