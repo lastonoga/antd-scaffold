@@ -8,7 +8,7 @@ export class Accessor {
 		this.config = config
 	}
 
-	getAtoms() {
+	getAtomKeys() {
 		return [];
 	}
 

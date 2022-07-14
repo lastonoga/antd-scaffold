@@ -11,4 +11,11 @@ export class Adapter {
 	getAtoms() {
 		return []
 	}
+
+	getAtomKeys() {
+		return this.getAtoms().map(a => a.key);
+	}
+
+	component(ctx) {
+	}
 }

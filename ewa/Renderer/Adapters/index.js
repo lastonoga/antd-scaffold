@@ -28,3 +28,9 @@ export function adapterFactory({ name, ...config }) {
 
 	return new ADAPTERS_REGISTRY[name](config);
 }
+
+export function runAdapters(context, component) {
+	for(let adapter of (component.adapters || [])) {
+		adapterFactory(adapter).component(context);
+	}
+}

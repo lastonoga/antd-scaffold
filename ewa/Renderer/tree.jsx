@@ -1,4 +1,6 @@
 import { createAtoms, getContext, Atoms, makeOptionStateful } from './store'
+import { runAdapters } from './Adapters'
+
 import { isAccessor, accessorFactory } from './Accessors'
 import { EwaContext } from './index';
 import { Components } from '../../lib/builder/antd'
@@ -29,6 +31,8 @@ function ComponentWrapper({ keys, node }) {
   if(!isComponent(node)) {
     throw Error(`Undefined Node ${node}`)
   }
+
+  runAdapters(context, node);
 
   let Component = getComponent(node.component);
   let Options = makeOptionStateful(context, node.options)

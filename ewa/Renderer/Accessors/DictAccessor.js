@@ -1,13 +1,14 @@
 import { Accessor } from './Accessor'
 
-export class SimpleSingleAccessor extends Accessor {
+export class DictAccessor extends Accessor {
 
 	static name() {
-		return 'SimpleSingleAccessor';
+		return 'DictAccessor';
 	}
 
-	constructor({ dep }) {
+	constructor({ key, dep }) {
 		super()
+		this.key = key
 		this.dep = dep
 	}
 
@@ -17,7 +18,7 @@ export class SimpleSingleAccessor extends Accessor {
 
 	get(ctx) {
 		try {
-			return ctx[this.dep].get;
+			return ctx[this.dep].get[this.key];
 		} catch(err) {
 			console.error(`There is no variable:${this.dep} in context`, ctx);
 			return null;

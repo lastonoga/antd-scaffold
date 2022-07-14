@@ -48,7 +48,7 @@ function defineAtoms(adapterAtoms) {
 // TMP
 export function makeOptionStateful(context, options = {}) {
 	let statefulOptions = {
-		...options,
+		// ...options,
 	};
 	
 	for(let key in options) {
@@ -57,6 +57,8 @@ export function makeOptionStateful(context, options = {}) {
 			statefulOptions[key] = accessorFactory(option).get(context);
 		} else if(isMutator(option)) {
 			statefulOptions[key] = mutatorFactory(option).set(context);
+		} else {
+			statefulOptions[key] = option;
 		}
 	}
 
@@ -91,7 +93,7 @@ export function getContext(component) {
 	}
 
 	for(let adapter of (component.adapters || [])) {
-		setState(states, adapterFactory(adapter).getAtoms().map(a => a.key));
+		setState(states, adapterFactory(adapter).getAtomKeys());
 	}
 
 	let options = component.options || {};

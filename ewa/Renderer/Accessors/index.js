@@ -1,7 +1,9 @@
 import { SimpleSingleAccessor } from './SimpleSingleAccessor';
+import { DictAccessor } from './DictAccessor';
 
 const ACCESSOR_LIST = [
 	SimpleSingleAccessor,
+	DictAccessor,
 ]
 
 let ACCESSOR_REGISTRY = {}
