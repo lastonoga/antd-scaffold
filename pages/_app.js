@@ -1,13 +1,12 @@
 import '../styles/globals.css'
 import 'antd/dist/antd.css';
+import { EwaRoot } from '../ewa/index.js';
 
-import {
-  RecoilRoot,
-} from 'recoil';
+import { RecoilRoot } from 'recoil';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <RecoilRoot>
+    <RecoilRoot config={{ mutators: [] }}>
       <Component {...pageProps} />
     </RecoilRoot>
   )
