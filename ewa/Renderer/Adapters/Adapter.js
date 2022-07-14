@@ -12,6 +12,9 @@ export class Adapter {
 		return []
 	}
 
+	/**
+	 * State deps for particualr adapter 
+	 */
 	getAtomKeys() {
 		return this.getAtoms().map(a => a.key);
 	}

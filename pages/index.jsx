@@ -9,7 +9,8 @@ export default function Home() {
         options: {},
         children: [{
             component: "Space",
-            children: [{
+            children: [
+            {
                 adapters: [{
                     name: 'StateAdapter',
                     key: 'test',
@@ -45,11 +46,6 @@ export default function Home() {
                         __type: 'accessor',
                         name: 'DomAccessor',
                         children: [{
-                            adapters: [{
-                                name: 'StateAdapter',
-                                key: 'test',
-                                value: 'test2',
-                            }],
                             component: "Select",
                             options: {
                                 value: {
@@ -87,6 +83,11 @@ export default function Home() {
                 name: 'ApiAdapter',
                 key: 'tableData',
                 deps: ['test'],
+                config: {
+                    url: '123',
+                    method: 'post',
+                    params: [1,2,3],
+                }
             }],
             component: "Table",
             options: {
