@@ -1,8 +1,4 @@
-import { SimpleSingleMutator } from './SimpleSingleMutator';
-
-const MUTATOR_LIST = [
-	SimpleSingleMutator,
-]
+import { EwaConfig } from '../index';
 
 let MUTATOR_REGISTRY = {}
 
@@ -15,7 +11,7 @@ export function createMutatorRegistry(force = false) {
 		return;
 	}
 
-	for(let mutator of MUTATOR_LIST) {
+	for(let mutator of EwaConfig.mutators) {
 		MUTATOR_REGISTRY[mutator.name()] = mutator;
 	}
 }

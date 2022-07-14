@@ -12,7 +12,7 @@ export class Accessor {
 		return [];
 	}
 
-	get(ctx) {
+	get(ctx, originValue) {
 		return null;
 	}
 

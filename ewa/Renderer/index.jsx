@@ -1,22 +1,45 @@
 import { createContext } from 'react';
 export { ewa } from './tree'
 
-export const EwaContext = createContext('ewa');
+// Accessors
+import { SimpleSingleAccessor } from './Accessors/SimpleSingleAccessor';
+import { DictAccessor } from './Accessors/DictAccessor';
+import { DomAccessor } from './Accessors/DomAccessor';
+
+// Mutators
+import { SimpleSingleMutator } from './Mutators/SimpleSingleMutator';
+
+// Adapters
+import { ApiAdapter } from './Adapters/ApiAdapter'
+import { StateAdapter } from './Adapters/StateAdapter'
+
+// Main Config
+export let EwaConfig = {
+    mutators: [
+        SimpleSingleMutator,
+    ],
+    accessors: [
+        SimpleSingleAccessor,
+        DictAccessor,
+        DomAccessor,
+    ],
+    adapters: [
+        ApiAdapter,
+        StateAdapter,
+    ], // hooks
+    // interceptors, // middleware
+    components: [], // registered components
+    // showcase, // TODO: UI Kit theme editor
+}
 
 
 export function EwaRoot({
     children,
-    config,
-    mutators, // getters
-    accessors, // setters
-    adapters, // hooks
-    interceptors, // middleware
-    components, // registered components
-    showcase, // TODO: UI Kit theme editor
+    components = [],
 }) {
-    return (
-        <EwaContext.Provider value={config}>
-			{children}
- 		</EwaContext.Provider>
-    )
+    EwaConfig.components = {
+        ...EwaConfig.components,
+        ...components,
+    }
+    return children;
 }

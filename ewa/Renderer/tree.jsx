@@ -2,12 +2,16 @@ import { createAtoms, getContext, Atoms, makeOptionStateful } from './store'
 import { runAdapters } from './Adapters'
 
 import { isAccessor, accessorFactory } from './Accessors'
-import { EwaContext } from './index';
-import { Components } from '../../lib/builder/antd'
+import { EwaConfig } from './index';
+
 
 function getComponent(name) {
-  return Components[name];
+  if(!EwaConfig.components[name]) {
+    throw Error(`There is no component:${name} registered`);
+  }
+  return EwaConfig.components[name];
 }
+
 
 function isComponent(value) {
   if(typeof value !== 'object') {
@@ -16,6 +20,7 @@ function isComponent(value) {
 
   return typeof value.component !== 'undefined';
 }
+
 
 function ComponentWrapper({ keys, node }) {
   const context = getContext(node);
@@ -54,7 +59,7 @@ function ComponentWrapper({ keys, node }) {
 /**
  * Tree renderer
  */
-function RenderComponents(prev_index, components) {
+export function RenderComponents(prev_index, components) {
   return components.map((node, i) => {
     const keys = [...prev_index, i];
     return <ComponentWrapper key={`${node.component}-${keys.join('-')}`} keys={keys} node={node} />

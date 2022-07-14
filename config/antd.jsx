@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../../styles/Home.module.css'
 import dynamic from 'next/dynamic'
 // ANTd
 import React from 'react';
@@ -20,6 +19,7 @@ export const Components = {
   Input: dynamic(() => import('antd/lib/input/input')),
   Table: dynamic(() => import('antd/lib/table')),
   Button: dynamic(() => import('antd/lib/button')),
+  Popover: dynamic(() => import('antd/lib/popover')),
 }
 
 

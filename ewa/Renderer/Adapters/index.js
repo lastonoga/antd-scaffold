@@ -1,10 +1,5 @@
-import { ApiAdapter } from './ApiAdapter'
-import { StateAdapter } from './StateAdapter'
+import { EwaConfig } from '../index';
 
-const ADAPTERS_LIST = [
-	ApiAdapter,
-	StateAdapter,
-]
 
 let ADAPTERS_REGISTRY = {}
 
@@ -13,7 +8,7 @@ export function createAdapterRegistry(force = false) {
 		return;
 	}
 
-	for(let adapter of ADAPTERS_LIST) {
+	for(let adapter of EwaConfig.adapters) {
 		console.log('[Adapter:new]', `${adapter.name()}`)
 		ADAPTERS_REGISTRY[adapter.name()] = adapter;
 	}

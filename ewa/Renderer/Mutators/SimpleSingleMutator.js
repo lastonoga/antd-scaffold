@@ -15,7 +15,7 @@ export class SimpleSingleMutator extends Mutator {
 		return [this.dep];
 	}
 	
-	set(ctx) {
+	set(ctx, originValue) {
 		return (value) => ctx[this.dep].set(value);
 	}
 

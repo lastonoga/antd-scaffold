@@ -17,7 +17,7 @@ export default function Home() {
                 }],
                 component: "Select",
                 options: {
-                    defaultValue: {
+                    value: {
                         __type: 'accessor',
                         name: 'SimpleSingleAccessor',
                         dep: 'test'
@@ -39,10 +39,49 @@ export default function Home() {
                     }],
                 },
             }, {
-                __type: 'accessor',
-                name: 'SimpleSingleAccessor',
-                dep: 'test'
-            }, ]
+                component: 'Popover',
+                options: {
+                    content: {
+                        __type: 'accessor',
+                        name: 'DomAccessor',
+                        children: [{
+                            adapters: [{
+                                name: 'StateAdapter',
+                                key: 'test',
+                                value: 'test2',
+                            }],
+                            component: "Select",
+                            options: {
+                                value: {
+                                    __type: 'accessor',
+                                    name: 'SimpleSingleAccessor',
+                                    dep: 'test'
+                                },
+                                onChange: {
+                                    __type: 'mutator',
+                                    name: 'SimpleSingleMutator',
+                                    dep: 'test'
+                                },
+                                options: [{
+                                    label: 'test1',
+                                    value: 'test1',
+                                }, {
+                                    label: 'test2',
+                                    value: 'test2',
+                                }, {
+                                    label: 'test3',
+                                    value: 'test3',
+                                }],
+                            },
+                        }],
+                    },
+                },
+                children: [{
+                    __type: 'accessor',
+                    name: 'SimpleSingleAccessor',
+                    dep: 'test'
+                }]
+            }]
         }, {
             adapters: [{
                 name: 'ApiAdapter',

@@ -1,10 +1,4 @@
-import { SimpleSingleAccessor } from './SimpleSingleAccessor';
-import { DictAccessor } from './DictAccessor';
-
-const ACCESSOR_LIST = [
-	SimpleSingleAccessor,
-	DictAccessor,
-]
+import { EwaConfig } from '../index';
 
 let ACCESSOR_REGISTRY = {}
 
@@ -17,7 +11,7 @@ export function createAccessorRegistry(force = false) {
 		return;
 	}
 
-	for(let accessor of ACCESSOR_LIST) {
+	for(let accessor of EwaConfig.accessors) {
 		ACCESSOR_REGISTRY[accessor.name()] = accessor;
 	}
 }

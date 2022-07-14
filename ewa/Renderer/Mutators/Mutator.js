@@ -12,7 +12,7 @@ export class Mutator {
 		return [];
 	}
 
-	set(ctx) {
+	set(ctx, originValue) {
 		return null;
 	}
 
