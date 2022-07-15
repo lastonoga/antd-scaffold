@@ -4,27 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilState, atom } from 'recoil';
 import { RenderComponents } from './render';
 import { TreeOperator } from './tree';
-import { Tree } from 'antd';
-import { editorBlob } from './store';
+import { Tree, Button, Row, Col, Space, Modal, Card } from 'antd';
+import { editorTree, componentsModal } from './store';
+import { EwaConfig } from '../Renderer/index';
 const { Header, Content, Footer, Sider } = Layout;
 
-
-// function getItem(label, key, icon, children, type) {
-//   return {
-//     key,
-//     icon,
-//     children,
-//     label,
-//     type,
-//   };
-// }
-
-// const items = [
-// 	getItem('Pages', 'g1', null, [getItem('Option 1', '1'), getItem('Option 2', '2')], 'group'),
-// 	getItem('Components', 'g1', null, [getItem('Option 1', '1'), getItem('Option 2', '2')], 'group'),
-// ];
-
-// 
 
 export function HelperTooltip() {
 	const [cords, setCords] = useState({ top: 0, left: 0, display: 'none' })
@@ -67,7 +51,7 @@ export function HelperTooltip() {
 
 
 export function Layers() {
-	const [state, setState] = useRecoilState(editorBlob);
+	const [state, setState] = useRecoilState(editorTree);
 
 	const onDrop = (info) => {
 		const getPath = (pos) => pos.split('-').splice(1).map(i => parseInt(i));
@@ -103,19 +87,51 @@ export function Layers() {
 	      defaultExpandAll={true}
 	      onDrop={onDrop}
 	      treeData={new TreeOperator(state).toAnt()}
-	      style={{padding: '10px'}}
 	    />
 	)
 }
 
+export function SpacePadding({ children }) {
+	return <div style={{ padding: 20 }}>{children}</div>
+}
+
 export function Editor() {
-	const [state, setState] = useRecoilState(editorBlob);
+	const [state, setState] = useRecoilState(editorTree);
+	const [visible, setVisible] = useRecoilState(componentsModal);
 
   return (
 	<Layout>
 		<HelperTooltip />
 		<Sider style={{ background: '#fff' }} width={250}>
-			<Layers />
+			<SpacePadding>
+				<Space direction="vertical" size="middle" style={{ width: '100%' }}>
+					<Button onClick={() => setVisible(true)} block>Add Component</Button>
+					<Modal
+        		visible={visible}
+		        title="Select components"
+		        onOk={() => setVisible(false)}
+		        onCancel={() => setVisible(false)}
+		        footer={[]}
+		      >
+		      	<Row gutter={[16, 16]}>
+			        {Object.entries(EwaConfig.components).map(([name, Component]) => {
+			        	return (
+			        		<Col span={8}>
+				        		<Card onClick={() => setState((new TreeOperator(state)).appendNode({
+				        			component: name,
+				        			label: name,
+				        			children: [],
+				        		}).getTree())}>
+								      <p>{name}</p>
+								    </Card>
+							    </Col>
+						    )
+			        })}
+		        </Row>
+		      </Modal>
+					<Layers />
+				</Space>
+			</SpacePadding>
 		</Sider>
 		<Content style={{ height: '100vh', }}>
 			<div style={{ background: '#fff', margin: 60 }}>

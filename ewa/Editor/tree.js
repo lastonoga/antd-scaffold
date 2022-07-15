@@ -48,15 +48,27 @@ export class TreeOperator {
 
 		this.insertNode(node, toPath, toIndex);
 		this.removeNode(fromPath);
+
+		return this;
 	}
 
 	removeNode(path) {
 		const index = path.splice(-1, 1);
 		this.getNode(path).children.splice(index, 1)
+
+		return this;
 	}
 
 	insertNode(node, toPath, toIndex) {
 		this.getNode(toPath).children.splice(toIndex, 0, node)
+		console.warn(this.getNode(toPath), toIndex, node)
+
+		return this;
+	}
+
+	appendNode(node) {
+		this.insertNode(node, [], this.tree.length)
+		return this;
 	}
 
 	toAnt() {

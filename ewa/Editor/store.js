@@ -1,7 +1,12 @@
 import { atom } from 'recoil';
 
-export const editorBlob = atom({
-    key: 'editor',
+export const componentsModal = atom({
+	key: 'componentsModal',
+    default: false,
+});
+
+export const editorTree = atom({
+    key: 'editorTree',
     default: [{
     	component: 'Space',
     	layer: 'Space 1',
