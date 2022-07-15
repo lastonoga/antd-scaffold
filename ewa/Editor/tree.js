@@ -22,6 +22,14 @@ export class TreeOperator {
 		this.tree = JSON.parse(JSON.stringify(tree));
 	}
 
+	static path(keys) {
+		return `${keys.join('-')}`
+	}
+
+	static uid(node, keys) {
+		return `${node.component}-${TreeOperator.path(keys)}`
+	}
+
 	getNode(path) {
 		let node = { children: this.tree }
 		

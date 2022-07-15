@@ -1,6 +1,7 @@
 import { EwaConfig } from '../Renderer';
 import { isAccessor, } from '../Renderer/Accessors'
 import { isMutator, } from '../Renderer/Mutators'
+import { TreeOperator } from './tree';
 
 
 function getComponent(name) {
@@ -53,7 +54,7 @@ function ComponentWrapper({ keys, node }) {
 
     // Render nested components
     return (
-        <Component {...Options} data-ewa={`${node.component}-${keys.join('-')}`}>
+        <Component {...Options} data-ewa={TreeOperator.path(keys)}>
           {RenderComponents(keys, node.children || [])}
         </Component>
     )
@@ -66,6 +67,6 @@ function ComponentWrapper({ keys, node }) {
 export function RenderComponents(prev_index, components) {
     return components.map((node, i) => {
         const keys = [...prev_index, i];
-        return <ComponentWrapper key={`${node.component}-${keys.join('-')}`} keys={keys} node={node} />
+        return <ComponentWrapper key={TreeOperator.uid(node, keys)} keys={keys} node={node} />
     })
 }

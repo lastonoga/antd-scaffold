@@ -5,6 +5,11 @@ export const componentsModal = atom({
     default: false,
 });
 
+export const activeElement = atom({
+	key: 'activeElement',
+    default: false,
+});
+
 export const editorTree = atom({
     key: 'editorTree',
     default: [{
