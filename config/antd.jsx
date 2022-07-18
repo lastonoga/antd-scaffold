@@ -11,15 +11,9 @@ const { Header, Footer, Sider, Content } = Layout;
  * @type {Object}
  */
 export const Components = {
-  SiteLayout,
-  Col: dynamic(() => import('antd/lib/grid/col')),
-  Row: dynamic(() => import('antd/lib/grid/row')),
-  Select: dynamic(() => import('antd/lib/select')),
-  Space: dynamic(() => import('antd/lib/space')),
-  Input: dynamic(() => import('antd/lib/input/Input')),
-  Table: dynamic(() => import('antd/lib/table')),
-  Button: dynamic(() => import('antd/lib/button')),
-  Popover: dynamic(() => import('antd/lib/popover')),
+  SiteLayout: {
+    component: SiteLayout,
+  }
 }
 
 

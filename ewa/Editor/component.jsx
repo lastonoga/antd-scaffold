@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilState, atom } from 'recoil';
 import { RenderComponents } from './render';
 import { TreeOperator } from './tree';
-import { Tree, Button, Row, Col, Space, Modal, Card } from 'antd';
+import { Tree, Button, Row, Col, Space, Modal, Card, Empty } from 'antd';
 import { editorTree, componentsModal, activeElement } from './store';
 import { EwaConfig } from '../Renderer/index';
+import { getComponentOptions } from '../Renderer/tree';
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -32,7 +33,10 @@ export function HelperTooltip() {
 			if(!targetElement && !isTree) {
 				setElement(null);
 			} else {
-				setElement(targetElement);
+				setElement({
+					node: targetElement,
+					path: targetElement.attributes['data-ewa'].value.split('-').map(i => parseInt(i))
+				});
 			}
 		}
 
@@ -51,7 +55,7 @@ export function HelperTooltip() {
 				return setCords(cords)
 			}
 
-			let elCords = element.getBoundingClientRect();
+			let elCords = element.node.getBoundingClientRect();
 			
 			cords.display = 'block';
 			cords.left = `${elCords.left}px`;
@@ -118,7 +122,10 @@ export function Layers() {
 		}
 
 		loop(tree, [0], (node, keys) => {
-			setElement(document.querySelector(`[data-ewa="${TreeOperator.path(keys)}"]`));
+			setElement({
+				node: document.querySelector(`[data-ewa="${TreeOperator.path(keys)}"]`),
+				path: keys,
+			});
 		})
 	}
 
@@ -134,6 +141,23 @@ export function Layers() {
 	)
 }
 
+export function Options() {
+	const [state, setState] = useRecoilState(editorTree);
+	const [element, setElement] = useRecoilState(activeElement);
+	const tree = new TreeOperator(state);
+
+	if(!element) {
+		return <Empty />
+	}
+
+	let el = tree.getNode(element.path.slice(1))
+	
+
+	return (
+		<div></div>
+	)
+}
+
 export function SpacePadding({ children }) {
 	return <div style={{ padding: 20 }}>{children}</div>
 }
@@ -144,7 +168,9 @@ export function Editor() {
 
   return (
 	<Layout>
+		{/* Insert tooltip */}
 		<HelperTooltip />
+		{/* left */}
 		<Sider style={{ background: '#fff' }} width={250}>
 			<SpacePadding>
 				<Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -176,13 +202,15 @@ export function Editor() {
 				</Space>
 			</SpacePadding>
 		</Sider>
+		{/* Content */}
 		<Content style={{ height: '100vh', }}>
 			<div style={{ background: '#fff', margin: 60 }}>
 				{RenderComponents([0], state)}
 			</div>
 		</Content>
+		{/* Right */}
 		<Sider style={{ background: '#fff' }} width={250}>
-			right sidebar
+			<Options />
 		</Sider>
 	</Layout>
   );

@@ -13,6 +13,10 @@ import { SimpleSingleMutator } from './Mutators/SimpleSingleMutator';
 import { ApiAdapter } from './Adapters/ApiAdapter'
 import { StateAdapter } from './Adapters/StateAdapter'
 
+// Connectors
+import { AntdComponents } from '../Connectors/Antd'
+
+
 // Main Config
 export let EwaConfig = {
     mutators: [
@@ -28,7 +32,9 @@ export let EwaConfig = {
         StateAdapter,
     ], // hooks
     // interceptors, // middleware
-    components: [], // registered components
+    components: {
+        ...AntdComponents,
+    },
     // showcase, // TODO: UI Kit theme editor
 }
 

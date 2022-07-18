@@ -1,15 +1,8 @@
-import { EwaConfig } from '../Renderer';
+import { getComponent } from '../Renderer/tree';
 import { isAccessor, } from '../Renderer/Accessors'
 import { isMutator, } from '../Renderer/Mutators'
 import { TreeOperator } from './tree';
 
-
-function getComponent(name) {
-    if (!EwaConfig.components[name]) {
-        throw Error(`There is no component:${name} registered`);
-    }
-    return EwaConfig.components[name];
-}
 
 function isComponent(value) {
   if(typeof value !== 'object') {
