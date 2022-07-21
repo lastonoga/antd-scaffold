@@ -1,7 +1,7 @@
 import { Adapter } from './Adapter'
 import React, { Suspense, useEffect } from 'react';
 import { atom } from 'recoil';
-import { hasContext, getFromContext, createState, createWaitingValues } from '../store'
+import { hasContext, getFromContext, createState, createWaitingValues } from '../context'
 
 export class ApiAdapter extends Adapter {
 
@@ -48,7 +48,7 @@ export class ApiAdapter extends Adapter {
                         address: '10 Downing Street',
                     }
                 ])
-            }, 100)
+            }, 500)
         })
     }
 

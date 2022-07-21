@@ -1,5 +1,5 @@
 import { Accessor } from './Accessor'
-import { getFromContext, createState } from '../store';
+import { getFromContext, createState } from '../context';
 
 export class SimpleSingleAccessor extends Accessor {
 

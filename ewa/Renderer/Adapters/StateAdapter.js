@@ -1,6 +1,6 @@
 import { Adapter } from './Adapter'
 import { atom } from 'recoil';
-import { hasContext } from '../store'
+import { hasContext } from '../context'
 
 export class StateAdapter extends Adapter {
 

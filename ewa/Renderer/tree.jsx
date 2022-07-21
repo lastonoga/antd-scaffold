@@ -1,4 +1,4 @@
-import { createGlobalContext, getContext } from './store'
+import { createGlobalContext, getContext } from './context';
 import { makeOptionStateful } from './options'
 import { runAdapters } from './Adapters'
 

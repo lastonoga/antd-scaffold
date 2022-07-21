@@ -1,6 +1,6 @@
 import { Mutator } from './Mutator'
 import { useSetRecoilState } from 'recoil';
-import { getFromContext, createState } from '../store';
+import { getFromContext, createState } from '../context';
 
 export class SimpleSingleMutator extends Mutator {
 

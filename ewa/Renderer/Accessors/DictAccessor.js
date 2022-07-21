@@ -1,6 +1,6 @@
 import { Accessor } from './Accessor'
 import { useRecoilState } from 'recoil';
-import { getFromContext, addToContext, createState } from '../store';
+import { getFromContext, addToContext, createState } from '../context';
 
 export class DictAccessor extends Accessor {
 
