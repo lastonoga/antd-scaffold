@@ -1,4 +1,5 @@
 import { Accessor } from './Accessor'
+import { getFromContext, createState } from '../store';
 
 export class SimpleSingleAccessor extends Accessor {
 
@@ -11,18 +12,12 @@ export class SimpleSingleAccessor extends Accessor {
 		this.dep = dep
 	}
 
-	getAtomKeys() {
-		return [this.dep];
+	localContext(globalCtx, ctx) {
+		createState(ctx, this.dep, getFromContext(globalCtx, this.dep))
 	}
 
 	get(ctx) {
-		try {
-			return ctx[this.dep].get;
-		} catch(err) {
-			console.error(`There is no variable:${this.dep} in context`, ctx);
-			return null;
-		}
-		
+		return getFromContext(ctx, this.dep).getter;
 	}
 
 }

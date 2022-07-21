@@ -1,4 +1,6 @@
 import { Mutator } from './Mutator'
+import { useSetRecoilState } from 'recoil';
+import { getFromContext, createState } from '../store';
 
 export class SimpleSingleMutator extends Mutator {
 
@@ -11,12 +13,12 @@ export class SimpleSingleMutator extends Mutator {
 		this.dep = dep
 	}
 
-	getAtomKeys() {
-		return [this.dep];
+	localContext(globalCtx, ctx) {
+		createState(ctx, this.dep, getFromContext(globalCtx, this.dep))
 	}
-	
-	set(ctx, originValue) {
-		return (value) => ctx[this.dep].set(value);
+
+	set(ctx) {
+		return getFromContext(ctx, this.dep).setter;
 	}
 
 }

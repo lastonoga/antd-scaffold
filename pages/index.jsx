@@ -111,14 +111,12 @@ export default function Home() {
                 dataSource: {
                     __type: 'accessor',
                     name: 'DictAccessor',
-                    key: 'response',
-                    dep: 'tableData'
+                    dep: 'tableData.response'
                 },
                 loading: {
                     __type: 'accessor',
                     name: 'DictAccessor',
-                    key: 'loading',
-                    dep: 'tableData'
+                    dep: 'tableData.loading'
                 },
             }
         }],

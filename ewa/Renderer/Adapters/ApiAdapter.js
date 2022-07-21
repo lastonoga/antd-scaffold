@@ -1,5 +1,7 @@
 import { Adapter } from './Adapter'
 import React, { Suspense, useEffect } from 'react';
+import { atom } from 'recoil';
+import { hasContext, getFromContext, createState, createWaitingValues } from '../store'
 
 export class ApiAdapter extends Adapter {
 
@@ -15,27 +17,27 @@ export class ApiAdapter extends Adapter {
         this.config = config;
     }
 
-    getAtoms() {
-        return [{
+    globalContext(ctx) {
+		if(hasContext(ctx, this.key)) {
+            console.error(`Atom key:${this.key} is already defined. Please, use unique names for dynamic variables`);
+        }
+
+        ctx[this.key] = atom({
             key: this.key,
-            value: {
+            default: {
                 response: null,
                 loading: false,
                 error: false,
             },
-        }]
-    }
-
-    getAtomKeys() {
-        return [this.key, ...this.deps];
-    }
+        });
+	}
 
     async request(ctx) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve([{
                         key: '1',
-                        name: ctx.test.get,
+                        name: ctx.test,
                         age: 32,
                         address: '10 Downing Street',
                     },
@@ -46,47 +48,61 @@ export class ApiAdapter extends Adapter {
                         address: '10 Downing Street',
                     }
                 ])
-            }, 1500)
+            }, 100)
         })
     }
 
-    async run(ctx) {
-    	let { get: state, set: setState } = ctx[this.key];
+    get depsKey() {
+        return `${this.key}__deps`;
+    }
 
-    	if(state.loading) {
-    		return;
-    	}
-
-        setState({
-            ...state,
-            loading: true,
-        })
-
-        let response = null
-        
-        try {
-            response = await this.request(ctx);
-        } catch (e) {
-            setState({
-                ...state,
-                error: e,
-            })
-        } finally {
-            setState({
-                ...state,
-                response,
-                loading: false,
-            })
-        }
-
-        return response;
+    localContext(globalCtx, ctx) {
+        createState(ctx, this.key, getFromContext(globalCtx, this.key));
+        createWaitingValues(ctx, this.depsKey, this.deps.map(dep => getFromContext(globalCtx, dep)))
     }
 
     component(ctx) {
-        let deps = this.deps.map(dep => ctx[dep].get)
+        const { getter: state, setter: setState } = getFromContext(ctx, this.key)
+        const deps = getFromContext(ctx, this.depsKey)
+        
+        const depsContext = {}
+        for(let index in this.deps) {
+            depsContext[this.deps[index]] = deps[index];
+        }
+
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-            !this.manual && this.run(ctx);
+            const run = async () => {
+
+                if(state.loading) {
+                    return;
+                }
+        
+                setState({
+                    ...state,
+                    loading: true,
+                })
+        
+                let response = null
+                
+                try {
+                    response = await this.request(depsContext);
+                } catch (e) {
+                    setState({
+                        ...state,
+                        error: e,
+                    })
+                } finally {
+                    setState({
+                        ...state,
+                        response,
+                        loading: false,
+                    })
+                }
+        
+                return response;
+            }
+            !this.manual && run();
         }, deps)
     }
 }

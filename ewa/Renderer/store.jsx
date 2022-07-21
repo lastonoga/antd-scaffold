@@ -4,6 +4,7 @@ import {
     selector,
     useRecoilState,
     useRecoilValue,
+	waitForAll,
     isRecoilValue,
 } from 'recoil';
 
@@ -11,99 +12,154 @@ import { adapterFactory } from './Adapters'
 import { isAccessor, accessorFactory } from './Accessors'
 import { isMutator, mutatorFactory } from './Mutators'
 
+const log = () => {}
+const warn = () => {}
+const error = () => {}
 
-export let Atoms = {}
+const console = { log, warn, error };
 
 /**
- * 1. Create page atoms
- * 2. Loop tree, find states (adapters, etc)
+ * Context
+ * 
+ * It's needed to make it customizable what and how to store
+ * The overal idea is:
+ * 1. Before layout is rendered we loop through Accessors, Mutators and Adapters for all tree's nodes
+ * 2. Execute globalConfig function to set whatever we want to global (For now it's only atoms)
+ * 3. Run Tree Renderer
+ * 4. Get local context for the rendering component
+ *    - Create recoild stores
+ *    - Run hooks
+ *    - ...
+ * 5. Make component props stateful
+ * 6. Render
+ * 7. Go to children
+ * 8. .... Repeat .....
  */
-export function createAtoms(components) {
+
+let globalContext = {}
+
+const TYPE_ACCESSOR = 'accessor';
+const TYPE_MUTATOR = 'mutator';
+const TYPE_ADAPTER = 'adapter';
+
+// Local
+export function getContext(component) {
+	return createLocalContext(component)
+}
+
+export function createLocalContext(component) {
+	let localContext = {};
+
+	loopDynamic(component, (type, data) => {
+		getFactoryInstance(type, data).localContext(globalContext, localContext);
+	});
+
+	return localContext;
+}
+
+// Global
+export function createGlobalContext(components) {
+	cleanupContext(globalContext);
+	loopGlobalContext(components);
+	console.log('[globalContext]', globalContext);
+}
+
+export function loopGlobalContext(components) {
 	return components.map((node, i) => {
-		createAdapterAtoms(node.adapters || []);
-		createAtoms(node.children || []);
+		loopDynamic(node, (type, data) => {
+			getFactoryInstance(type, data).globalContext(globalContext);
+		});
+		loopGlobalContext(node.children || []);
 	});
 }
 
-function createAdapterAtoms(adapters) {
-	for (let adapter of adapters) {
-		adapter = adapterFactory(adapter);
-		defineAtoms(adapter.getAtoms())
-	}
-}
-
-function defineAtoms(adapterAtoms) {
-    for (let adapterAtom of adapterAtoms) {
-        if (adapterAtom.key.includes(Atoms)) {
-            throw Error(`Atom:${adapterAtom.key} has already been defined`);
-        }
-        Atoms[adapterAtom.key] = atom({
-            key: adapterAtom.key,
-            default: adapterAtom.value,
-        });
-    }
-}
-
-
-// TMP
-export function makeOptionStateful(context, options = {}) {
-	let statefulOptions = {
-		// ...options,
-	};
-	
-	for(let key in options) {
-		const option = options[key];
-		if(isAccessor(option)) {
-			statefulOptions[key] = accessorFactory(option).get(context);
-		} else if(isMutator(option)) {
-			statefulOptions[key] = mutatorFactory(option).set(context);
-		} else {
-			statefulOptions[key] = option;
-		}
-	}
-
-	return statefulOptions;
-}
-
-function setState(states, atomKeys) {
-	atomKeys = Array.isArray(atomKeys) ? atomKeys : [atomKeys];
-	
-	for (let key of atomKeys) {
-		let [get, set] = getState(key);
-		states[key] = { get, set, };
-	}
-
-	return states;
-}
-
-function getState(key) {
-	if (!Object.keys(Atoms).includes(key)) {
-        throw Error(`There is no state registered: ${key}`)
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useRecoilState(Atoms[key]);
-}
-
-export function getContext(component) {
-	let states = {}
-
+// Common
+export function loopDynamic(component, callback) {
 	if(isAccessor(component)) {
-		return setState(states, accessorFactory(component).getAtomKeys());
+		callback(TYPE_ACCESSOR, component);
 	}
 
 	for(let adapter of (component.adapters || [])) {
-		setState(states, adapterFactory(adapter).getAtomKeys());
+		callback(TYPE_ADAPTER, adapter);
 	}
 
 	let options = component.options || {};
 	for(let key of Object.keys(options)) {
 		const option = options[key];
 		if(isAccessor(option)) {
-			setState(states, accessorFactory(option).getAtomKeys());
+			callback(TYPE_ACCESSOR, option);
 		} else if(isMutator(option)) {
-			setState(states, mutatorFactory(option).getAtomKeys());
+			callback(TYPE_MUTATOR, option);
 		}
 	}
-    return states;
+	// for(let child of (component.children || [])) {
+	// 	if(isAccessor(child)) {
+	// 		callback(TYPE_MUTATOR, option);
+	// 		console.warn('[adapter|child]', child, adapter);
+	// 	}
+	// }
+}
+
+export function getFactoryInstance(type, data) {
+	let instance = null;
+	
+	if(type === TYPE_ADAPTER) {
+		instance = adapterFactory(data);
+	} else if(type === TYPE_ACCESSOR) {
+		instance = accessorFactory(data);
+	} else if(type === TYPE_MUTATOR) {
+		instance = mutatorFactory(data);
+	} else {
+		throw new Error(`There is no ${type} defined`);
+	}
+
+	return instance
+}
+
+// Helpers
+export function hasContext(ctx, key) {
+	return Object.keys(ctx).includes(key);
+}
+
+export function addToContext(ctx, key, value) {
+	if(!hasContext(ctx, key)) {
+		ctx[key] = value;
+	} else {
+		// console.warn(`Can't add to context. Variable:${key} in already defined`, ctx);
+	}
+}
+
+export function getFromContext(ctx, key) {
+	if(!Array.isArray(ctx)) {
+		ctx = [ctx];
+	}
+
+	for(let c of ctx) {
+		if(hasContext(c, key)) {
+			return c[key]
+		}
+	}
+
+	throw new Error(`There is no variable:${key} in context`, ctx);
+}
+
+export function cleanupContext(ctx) {
+	ctx = {}
+}
+
+export function createState(ctx, key, atom) {
+	const [getter, setter] = useRecoilState(atom)
+
+	addToContext(ctx, key, {
+		getter,
+		setter,
+	})
+
+	return [getter, setter];
+}
+
+export function createWaitingValues(ctx, key, atoms) {
+	const values = useRecoilValue(waitForAll(atoms));
+	addToContext(ctx, key, values)
+	return values;
 }

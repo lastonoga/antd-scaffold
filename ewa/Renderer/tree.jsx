@@ -1,33 +1,9 @@
-import { createAtoms, getContext, Atoms, makeOptionStateful } from './store'
+import { createGlobalContext, getContext } from './store'
+import { makeOptionStateful } from './options'
 import { runAdapters } from './Adapters'
 
 import { isAccessor, accessorFactory } from './Accessors'
-import { EwaConfig } from './index';
-
-
-export function getComponentOptions(name) {
-  if(!EwaConfig.components[name]) {
-    throw Error(`There is no component:${name} registered`);
-  }
-  return EwaConfig.components[name].options || [];
-}
-
-
-export function getComponent(name) {
-  if(!EwaConfig.components[name]) {
-    throw Error(`There is no component:${name} registered`);
-  }
-  return EwaConfig.components[name].component;
-}
-
-
-function isComponent(value) {
-  if(typeof value !== 'object') {
-    return false;
-  }
-
-  return typeof value.component !== 'undefined';
-}
+import { getComponentOptions, getComponent, isComponent } from '../common'
 
 
 function ComponentWrapper({ keys, node }) {
@@ -76,7 +52,7 @@ export function RenderComponents(prev_index, components) {
 
 
 export function ewa(root) {
-  createAtoms(root)
+  createGlobalContext(root)
   return (
     RenderComponents([0], root)
   );

@@ -1,4 +1,6 @@
 import { Accessor } from './Accessor'
+import { useRecoilState } from 'recoil';
+import { getFromContext, addToContext, createState } from '../store';
 
 export class DictAccessor extends Accessor {
 
@@ -6,24 +8,25 @@ export class DictAccessor extends Accessor {
 		return 'DictAccessor';
 	}
 
-	constructor({ key, dep }) {
+	constructor({ dep }) {
 		super()
-		this.key = key
 		this.dep = dep
 	}
 
-	getAtomKeys() {
-		return [this.dep];
+	get key() {
+		return this.dep.split('.')[0]
+	}
+
+	extract_value(obj) {
+		return this.dep.split('.').slice(1).reduce((o,i)=> o[i], obj)
+	}
+
+	localContext(globalCtx, ctx) {
+		createState(ctx, this.key, getFromContext(globalCtx, this.key))
 	}
 
 	get(ctx) {
-		try {
-			return ctx[this.dep].get[this.key];
-		} catch(err) {
-			console.error(`There is no variable:${this.dep} in context`, ctx);
-			return null;
-		}
-		
+		return this.extract_value(getFromContext(ctx, this.key).getter);
 	}
 
 }

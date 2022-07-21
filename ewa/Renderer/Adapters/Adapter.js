@@ -1,22 +1,14 @@
-export class Adapter {
+import { Contextable } from "../Contextable";
 
+export class Adapter extends Contextable {
+	
 	static getName() {
 		return this.name;
 	}
 
 	constructor(config) {
+		super()
 		this.config = config
-	}
-
-	getAtoms() {
-		return []
-	}
-
-	/**
-	 * State deps for particualr adapter 
-	 */
-	getAtomKeys() {
-		return this.getAtoms().map(a => a.key);
 	}
 
 	component(ctx) {
