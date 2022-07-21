@@ -19,7 +19,7 @@ export function HelperTooltip() {
 	useEffect(() => {
 		const handler = (event) => {
 			const targetElement = event.target.closest('.ewa-component');
-			const isTree = event.target.closest('.ewa-configurable');
+			const isTree = event.target.closest('.ewa-configurable, .ant-select-dropdown');
 
 			if(isTree) {
 				return;

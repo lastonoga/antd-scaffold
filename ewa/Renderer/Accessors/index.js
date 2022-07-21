@@ -3,7 +3,7 @@ import { EwaConfig } from '../index';
 let ACCESSOR_REGISTRY = {}
 
 export function isAccessor(obj) {
-	return typeof obj === 'object' && obj.__type === 'accessor';
+	return obj !== null && typeof obj === 'object' && obj.__type === 'accessor';
 }
 
 export function createAccessorRegistry(force = false) {

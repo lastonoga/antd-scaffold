@@ -3,7 +3,7 @@ import { EwaConfig } from '../index';
 let MUTATOR_REGISTRY = {}
 
 export function isMutator(obj) {
-	return typeof obj === 'object' && obj.__type === 'mutator';
+	return obj !== null && typeof obj === 'object' && obj.__type === 'mutator';
 }
 
 export function createMutatorRegistry(force = false) {
