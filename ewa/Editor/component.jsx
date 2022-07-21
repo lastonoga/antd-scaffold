@@ -9,6 +9,7 @@ import { editorTree, componentsModal, activeElement } from './store';
 import { EwaConfig } from '../Renderer/index';
 import { getComponentOptions } from '../Renderer/tree';
 const { Header, Content, Footer, Sider } = Layout;
+import { Collapse, Slider } from 'antd';
 
 
 export function HelperTooltip() {
@@ -18,13 +19,14 @@ export function HelperTooltip() {
 		height: 100,
 		zIndex: 999,
 		background: '#dfdfdf',
+		opacity: 0.2,
 	})
 	const [element, setElement] = useRecoilState(activeElement);
 
 	useEffect(() => {
 		const handler = (event) => {
 			const targetElement = event.target.closest('.ewa-component');
-			const isTree = event.target.closest('.draggable-tree');
+			const isTree = event.target.closest('.ewa-configurable');
 
 			if(isTree) {
 				return;
@@ -131,7 +133,6 @@ export function Layers() {
 
 	return (
 		<Tree
-	      className="draggable-tree"
 	      draggable
 	      defaultExpandAll={true}
 	      onDrop={onDrop}
@@ -146,15 +147,54 @@ export function Options() {
 	const [element, setElement] = useRecoilState(activeElement);
 	const tree = new TreeOperator(state);
 
+	const getOptions = () => {
+		if(!element) {
+			return {}
+		}
+
+		let el = tree.getNode(element.path.slice(1))
+		return el.options || {};
+	}
+
+	const [options, setOptions] = useState(getOptions());
+
+	const getOption = (name) => {
+		return options[name] || null;
+	}
+
+	const changeOption = (name) => {
+		return (value) => setOptions({
+			...options,
+			[name]: value,
+		})
+	}
+
+	// Update default options whenever element is changed
+	useEffect(() => {
+		setOptions(getOptions())
+	}, [element]);
+
+	// Update real state with new values
+	useEffect(() => {
+		if(!element) {
+			return;
+		}
+
+		let el = tree.getNode(element.path.slice(1))
+		el.options = options;
+		setState(tree.getTree());
+	}, [options])
+	
 	if(!element) {
 		return <Empty />
 	}
 
-	let el = tree.getNode(element.path.slice(1))
-	
-
 	return (
-		<div></div>
+		<Collapse bordered={false}>
+			<Collapse.Panel header="Size" key="1">
+				<Slider value={getOption('size')} onChange={changeOption('size')} />
+			</Collapse.Panel>
+		</Collapse>
 	)
 }
 
@@ -171,7 +211,7 @@ export function Editor() {
 		{/* Insert tooltip */}
 		<HelperTooltip />
 		{/* left */}
-		<Sider style={{ background: '#fff' }} width={250}>
+		<Sider style={{ background: '#fff' }} width={250} className="ewa-configurable">
 			<SpacePadding>
 				<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 					<Button onClick={() => setVisible(true)} block>Add Component</Button>
@@ -209,7 +249,7 @@ export function Editor() {
 			</div>
 		</Content>
 		{/* Right */}
-		<Sider style={{ background: '#fff' }} width={250}>
+		<Sider style={{ background: '#fff' }} width={250} className="ewa-configurable">
 			<Options />
 		</Sider>
 	</Layout>

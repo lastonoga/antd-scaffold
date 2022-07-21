@@ -18,8 +18,8 @@ export function generateAntTree(prev_index, components) {
 
 export class TreeOperator {
 
-	constructor(tree) {
-		this.tree = JSON.parse(JSON.stringify(tree));
+	constructor(tree, copied = true) {
+		this.tree = copied ? JSON.parse(JSON.stringify(tree)) : tree;
 	}
 
 	static path(keys) {

@@ -1,16 +1,9 @@
-import { getComponent } from '../Renderer/tree';
+import { getComponent, isComponent } from '../common';
 import { isAccessor, } from '../Renderer/Accessors'
 import { isMutator, } from '../Renderer/Mutators'
 import { TreeOperator } from './tree';
 
 
-function isComponent(value) {
-  if(typeof value !== 'object') {
-    return false;
-  }
-
-  return typeof value.component !== 'undefined';
-}
 
 function makeOptionStateless(options) {
     let statelessOptions = {}
