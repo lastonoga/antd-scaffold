@@ -4,7 +4,7 @@ export function generateAntTree(prev_index, components) {
 
         let treeNode = {
         	title: node.layer || node.component,
-        	key: `${keys.join('|')}-${node.layer}-${node.component}`,
+        	key: `${keys.join('-')}$$$${node.layer}-${node.component}`,
         }
 
         if(node.children && node.children.length > 0) {
@@ -18,8 +18,8 @@ export function generateAntTree(prev_index, components) {
 
 export class TreeOperator {
 
-	constructor(tree, copied = true) {
-		this.tree = copied ? JSON.parse(JSON.stringify(tree)) : tree;
+	constructor(tree) {
+		this.tree = JSON.parse(JSON.stringify(tree));
 	}
 
 	static path(keys) {
@@ -77,6 +77,10 @@ export class TreeOperator {
 	appendNode(node) {
 		this.insertNode(node, [], this.tree.length)
 		return this;
+	}
+
+	static getPathFromKey(key) {
+		return key.split('$$$')[0].split('-').map(a => parseInt(a)).splice(1);
 	}
 
 	toAnt() {

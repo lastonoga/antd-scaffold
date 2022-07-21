@@ -11,6 +11,21 @@ import { Select, Checkbox } from '../Editor/Fields'
  * @type {Object}
  */
 export const AntdComponents = {
+  Layout: {
+    component: dynamic(() => import('antd/lib/layout')),
+  },
+  Sider: {
+    component: Sider,
+  },
+  Content: {
+    component: Content,
+  },
+  Header: {
+    component: Header,
+  },
+  Footer: {
+    component: Footer,
+  },
   Row: {
     component: dynamic(() => import('antd/lib/grid/row')),
     options: {
