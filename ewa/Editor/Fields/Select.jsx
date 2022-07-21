@@ -1,10 +1,17 @@
-import { Field } from './Field'
+import { Select as SelectAntd } from 'antd';
 
-export class Select extends Field {
+export function Select(defaultValue, options) {
+	return ({ getOption, changeOption }) => {
+		const selectOptions = options.map(value => ({
+			value,
+		}))
 	
-	constructor(defaultValue) {
-		super(defaultValue);
-		this.defaultValue = defaultValue
-	}
+		let value = defaultValue;
+	
+		if(getOption) {
+			value = getOption;
+		}
 
-} 
+		return <SelectAntd style={{ width: '100%' }} value={value} onChange={changeOption} options={selectOptions} />
+	}
+}

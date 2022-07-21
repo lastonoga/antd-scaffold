@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import React from 'react';
 import { Breadcrumb, Layout, Menu } from 'antd';
 const { Header, Footer, Sider, Content } = Layout;
-import { Select, Checkbox } from '../Editor/Fields'
+import { Select, Segmented } from '../Editor/Fields'
 /**
  * Registered components with dynamic import
  * @type {Object}
@@ -29,10 +29,9 @@ export const AntdComponents = {
   Row: {
     component: dynamic(() => import('antd/lib/grid/row')),
     options: {
-      align: new Select('top', ['top', 'middle', 'bottom']),
-      gutter: new Select([10, 20]),
-      wrap: new Checkbox(true),
-      justify: new Select('start', [
+      align: Select('top', ['top', 'middle', 'bottom']),
+      gutter: Select([10, 20]),
+      justify: Select('start', [
         'start',
         'end',
         'center',
@@ -44,26 +43,16 @@ export const AntdComponents = {
   },
   Col: {
     component: dynamic(() => import('antd/lib/grid/col')),
-    options: {
-    }
   },
   Select: {
     component: dynamic(() => import('antd/lib/select')),
-    options: [
-      new Select('options', 'test_1', [{
-        label: 'Test 0',
-        value: 'test',
-      }, {
-        label: 'Test 1',
-        value: 'test_1',
-      }, {
-        label: 'Test 2',
-        value: 'test_2',
-      }]),
-    ]
   },
   Space: {
     component: dynamic(() => import('antd/lib/space')),
+    options: {
+      align: Select('top', ['top', 'middle', 'bottom']),
+      size: Segmented('medium', ['small', 'medium', 'large']),
+    },
   },
   Input: {
     component: dynamic(() => import('antd/lib/input/Input')),
@@ -73,6 +62,9 @@ export const AntdComponents = {
   },
   Button: {
     component: dynamic(() => import('antd/lib/button')),
+    options: {
+      size: Select('medium', ['small', 'medium', 'large']),
+    },
   },
   Popover: {
     component: dynamic(() => import('antd/lib/popover')),

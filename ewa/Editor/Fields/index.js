@@ -1,2 +1,2 @@
 export { Select } from './Select';
-export { Checkbox } from './Checkbox';
+export { Segmented } from './Segmented';

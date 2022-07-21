@@ -7,6 +7,7 @@ import { editorTree, componentsModal, activeElement } from '../store';
 import { Collapse, Slider, Tabs, Select } from 'antd';
 import { isAccessor } from '../../Renderer/Accessors'
 import { isMutator } from '../../Renderer/Mutators'
+import { getComponentOptions } from '@/ewa/common';
 
 export function Options() {
 	const [state, setState] = useRecoilState(editorTree);
@@ -69,8 +70,7 @@ export function Options() {
 			return;
 		}
 
-		let el = tree.getNode(element.path.slice(1))
-		el.options = options;
+		component.options = options;
 		setState(tree.getTree());
 	}, [options])
 	
@@ -78,37 +78,22 @@ export function Options() {
 		return <Empty />
 	}
 
+    let componentOptions = getComponentOptions(component);
+
 	return (
         <Tabs defaultActiveKey="props" centered={true} tabBarGutter={50} tabBarStyle={{ margin: 0 }}>
             <Tabs.TabPane tab="Properties" key="props">
-                <Collapse bordered={false}>
-                    <Collapse.Panel header="Size" key="1" extra={genExtra('size')}>
-                        <Slider value={getOption('size')} onChange={changeOption('size')} />
-                    </Collapse.Panel>
-                    <Collapse.Panel header="Size" key="2" extra={genExtra('size')}>
-                        <Select style={{ width: '100%' }} value={getOption('size')} onChange={changeOption('size')} options={
-                            [{
-                                value: 'small',
-                            }, {
-                                value: 'medium',
-                            }, {
-                                value: 'large',
-                            }]
-                        } />
-                    </Collapse.Panel>
-                    <Collapse.Panel header="Align" key="3" extra={genExtra('align')}>
-                        <Select style={{ width: '100%' }} value={getOption('align')} onChange={changeOption('align')} options={
-                            [{
-                                value: 'start',
-                            }, {
-                                value: 'end',
-                            }, {
-                                value: 'baseline',
-                            }, {
-                                value: 'center',
-                            }]
-                        } />
-                    </Collapse.Panel>
+                <Collapse bordered={false} activeKey={Object.keys(componentOptions)}>
+                    {Object.entries(componentOptions).map(([name, field]) => {
+                        return (
+                            <Collapse.Panel header={name} key={name} extra={genExtra(name)}>
+                                {field({
+                                    getOption: getOption(name),
+                                    changeOption: changeOption(name)
+                                })}
+                            </Collapse.Panel>
+                        )
+                    })}
                 </Collapse>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Styles" key="styles">
